@@ -1,6 +1,11 @@
-export default {
+import { defineConfig } from 'vite'
+
+export default defineConfig({
   server: {
-    port: 5173, // ou qualquer outra porta
-    host: true  // necessário para acesso externo (ex: render.com, localhost em rede)
+    host: true,
+    port: 5173,
+    allowedHosts: [
+      'all' // aqui está o domínio que você recebeu no erro
+    ]
   }
-}
+})

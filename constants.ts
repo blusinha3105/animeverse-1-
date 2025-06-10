@@ -1,5 +1,5 @@
 
-export const API_BASE_URL = 'http://node1.forgerhost.online:20034'; // Replace with your backend URL
+export const API_BASE_URL = 'https://back-api.orbital.host'; // Replace with your backend URL
 export const APP_NAME = 'AnimeVerse';
 export const DEFAULT_PLACEHOLDER_IMAGE = 'https://picsum.photos/300/450?grayscale';
 export const EPISODE_THUMB_PLACEHOLDER = 'https://picsum.photos/320/180?grayscale';

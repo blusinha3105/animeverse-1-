@@ -1,4 +1,5 @@
 
+
 export interface Episode {
   id?: number; 
   temporada: number;
@@ -56,12 +57,15 @@ export interface User {
   vip?: boolean; 
   admin?: boolean;
   imagem_perfil?: string; 
+  is_banned?: boolean; // New field for ban status
+  banned_reason?: string; // New field for ban reason
 }
 
 export interface AuthResponse {
   message: string;
   token?: string; // Present on successful login
   user?: User; // May not be returned directly, token is decoded
+  reason?: string; // Optional reason for login failure (e.g., banned)
 }
 
 export interface TemporaryLinkResponse {
@@ -251,3 +255,29 @@ export interface FeaturedListItemAdmin extends AnimeBase {
   // This is what admin will see, includes anime details
   display_order: number;
 }
+
+// Settings types
+export interface GeneralSettings {
+  siteName: string;
+  catalogVerification: 'yes' | 'no';
+}
+
+export interface JuicyAdsSettings {
+  juicyAdsEnabled: boolean;
+  juicyAdsSpotBanner728x90: string;
+  juicyAdsSpotBanner300x250: string;
+  juicyAdsSpotMobileBanner300x100: string; // Common mobile size
+  juicyAdsSpotPopunder: string;
+}
+
+export interface ThemeSettings {
+  primary: string;
+  primaryAction: string;
+  secondary: string;
+  background: string;
+  card: string;
+  textPrimary: string;
+  textSecondary: string;
+}
+
+export interface SiteSettings extends GeneralSettings, JuicyAdsSettings, ThemeSettings {}

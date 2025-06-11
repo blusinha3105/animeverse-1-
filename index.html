@@ -1,27 +1,109 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AnimeVerse</title>
+    <script>
+      window.env = {
+        REACT_APP_API_BASE_URL: "%REACT_APP_API_BASE_URL%",
+        REACT_APP_JWPLAYER_KEY: "%REACT_APP_JWPLAYER_KEY%",
+        REACT_APP_DISQUS_SHORTNAME: "%REACT_APP_DISQUS_SHORTNAME%"
+      };
+
+      // Fallbacks if placeholders are not replaced by the build/deploy process
+      if (window.env.REACT_APP_API_BASE_URL === "%REACT_APP_API_BASE_URL%") {
+        window.env.REACT_APP_API_BASE_URL = 'http://localhost:3000'; // Default for local development
+      }
+      if (window.env.REACT_APP_JWPLAYER_KEY === "%REACT_APP_JWPLAYER_KEY%") {
+        window.env.REACT_APP_JWPLAYER_KEY = '64HPbvSQorQcd52B8XFuhMtEoitbvY/EXJmMBfKcXZQU2Rnn'; // Your default key
+      }
+      if (window.env.REACT_APP_DISQUS_SHORTNAME === "%REACT_APP_DISQUS_SHORTNAME%") {
+        window.env.REACT_APP_DISQUS_SHORTNAME = 'https-incriveiscuriosidades-online'; // Your default shortname
+      }
+    </script>
     <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
     <script>
+      (function() {
+        const DEFAULT_THEME_SETTINGS = {
+          primary: '#581c87',
+          primaryAction: '#dc2626',
+          secondary: '#7e22ce',
+          background: '#000000',
+          card: '#0A0A0A',
+          textPrimary: '#E0E0E0',
+          textSecondary: '#A0A0A0'
+        };
+
+        function applyTheme(theme) {
+          const root = document.documentElement;
+          if (!theme) {
+            console.warn("applyTheme called with no theme, using defaults.");
+            theme = DEFAULT_THEME_SETTINGS;
+          }
+
+          root.style.setProperty('--theme-primary', theme.primary || DEFAULT_THEME_SETTINGS.primary);
+          root.style.setProperty('--theme-primary-action', theme.primaryAction || DEFAULT_THEME_SETTINGS.primaryAction);
+          root.style.setProperty('--theme-secondary', theme.secondary || DEFAULT_THEME_SETTINGS.secondary);
+          root.style.setProperty('--theme-background', theme.background || DEFAULT_THEME_SETTINGS.background);
+          root.style.setProperty('--theme-card', theme.card || DEFAULT_THEME_SETTINGS.card);
+          root.style.setProperty('--theme-text-primary', theme.textPrimary || DEFAULT_THEME_SETTINGS.textPrimary);
+          root.style.setProperty('--theme-text-secondary', theme.textSecondary || DEFAULT_THEME_SETTINGS.textSecondary);
+          
+          if (document.body) {
+            document.body.style.backgroundColor = theme.background || DEFAULT_THEME_SETTINGS.background;
+          } else {
+            document.addEventListener('DOMContentLoaded', function() {
+              document.body.style.backgroundColor = theme.background || DEFAULT_THEME_SETTINGS.background;
+            });
+          }
+        }
+
+        window.applyThemeSettings = applyTheme; 
+
+        try {
+          const siteSettingsStored = localStorage.getItem('siteSettings');
+          if (siteSettingsStored) {
+            const parsedSiteSettings = JSON.parse(siteSettingsStored);
+            if (parsedSiteSettings && typeof parsedSiteSettings.primary === 'string') { // Check for a root theme property
+              const themeFromStorage = {
+                primary: parsedSiteSettings.primary || DEFAULT_THEME_SETTINGS.primary,
+                primaryAction: parsedSiteSettings.primaryAction || DEFAULT_THEME_SETTINGS.primaryAction,
+                secondary: parsedSiteSettings.secondary || DEFAULT_THEME_SETTINGS.secondary,
+                background: parsedSiteSettings.background || DEFAULT_THEME_SETTINGS.background,
+                card: parsedSiteSettings.card || DEFAULT_THEME_SETTINGS.card,
+                textPrimary: parsedSiteSettings.textPrimary || DEFAULT_THEME_SETTINGS.textPrimary,
+                textSecondary: parsedSiteSettings.textSecondary || DEFAULT_THEME_SETTINGS.textSecondary
+              };
+              applyTheme(themeFromStorage);
+            } else {
+              applyTheme(DEFAULT_THEME_SETTINGS);
+            }
+          } else {
+            applyTheme(DEFAULT_THEME_SETTINGS);
+          }
+        } catch (e) {
+          console.error("Erro ao aplicar tema do localStorage:", e);
+          applyTheme(DEFAULT_THEME_SETTINGS);
+        }
+      })();
+
       tailwind.config = {
         theme: {
           extend: {
             colors: {
-              'primary': '#581c87', // Dark Purple (purple-900)
-              'primary-action': '#dc2626', // Red (red-600)
-              'secondary': '#7e22ce', // Lighter Dark Purple (purple-700)
-              'background': '#000000', // Absolute Black
-              'card': '#0A0A0A', // Very Dark Gray (almost black)
-              'text-primary': '#E0E0E0', // Light Gray
-              'text-secondary': '#A0A0A0', // Medium Gray
-              // Admin specific colors
-              'admin-bg': '#000000', // Absolute Black for admin background
-              'admin-sidebar-bg': '#0A0A0A', // Very Dark Gray for admin sidebar
-              'admin-card-bg': '#121212', // Slightly distinct dark gray for admin cards
-              'admin-text': '#E0E0E0', // Light Gray
+              'primary': 'var(--theme-primary)',
+              'primary-action': 'var(--theme-primary-action)',
+              'secondary': 'var(--theme-secondary)',
+              'background': 'var(--theme-background)',
+              'card': 'var(--theme-card)',
+              'text-primary': 'var(--theme-text-primary)',
+              'text-secondary': 'var(--theme-text-secondary)',
+              'admin-bg': '#000000', 
+              'admin-sidebar-bg': '#0A0A0A',
+              'admin-card-bg': '#121212', 
+              'admin-text': '#E0E0E0', 
             },
             fontFamily: {
               sans: ['Inter', 'sans-serif'],
@@ -33,7 +115,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
       html, body, #root {
         height: 100%;
@@ -42,52 +123,47 @@
       }
       body {
         font-family: 'Inter', sans-serif;
-        background-color: #000000; /* Absolute Black */
-        color: #E0E0E0; /* Light Gray text */
-        overflow-x: hidden; /* Prevent horizontal scroll on body */
+        color: var(--theme-text-primary, #E0E0E0); 
+        overflow-x: hidden; 
       }
-      /* Main custom scrollbar for general content */
       .custom-scrollbar::-webkit-scrollbar {
         width: 8px;
         height: 8px;
       }
       .custom-scrollbar::-webkit-scrollbar-track {
-        background: #000000; /* Black track for absolute black theme */
+        background: var(--theme-background, #000000); 
       }
       .custom-scrollbar::-webkit-scrollbar-thumb {
-        background: #1F1F1F; /* Darker gray thumb */
+        background: #1F1F1F; 
         border-radius: 4px;
       }
       .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-        background: #2A2A2A; /* Slightly lighter dark gray thumb on hover */
+        background: #2A2A2A; 
       }
       
-      /* Scrollbar for Admin panel specific areas */
       .admin-custom-scrollbar::-webkit-scrollbar-track {
-        background: #030303; /* Darker track for admin areas */
+        background: #030303; 
       }
        .admin-custom-scrollbar::-webkit-scrollbar-thumb {
-        background: #1A1A1A; /* Dark gray thumb for admin */
+        background: #1A1A1A; 
       }
       .admin-custom-scrollbar::-webkit-scrollbar-thumb:hover {
-        background: #282828; /* Lighter dark gray thumb for admin on hover */
+        background: #282828; 
       }
 
-      /* Scrollbar for horizontal content like anime carousels */
       .horizontal-scrollbar::-webkit-scrollbar {
-        height: 6px; /* Slimmer for horizontal */
+        height: 6px; 
       }
       .horizontal-scrollbar::-webkit-scrollbar-track {
         background: transparent; 
       }
       .horizontal-scrollbar::-webkit-scrollbar-thumb {
-        background: #1F1F1F; /* Darker gray thumb */
+        background: #1F1F1F; 
         border-radius: 3px;
       }
       .horizontal-scrollbar::-webkit-scrollbar-thumb:hover {
-        background: #2A2A2A; /* Slightly lighter dark gray thumb on hover */
+        background: #2A2A2A; 
       }
-
     </style>
   <script type="importmap">
 {
@@ -97,32 +173,34 @@
     "react-dom/client": "https://esm.sh/react-dom@^19.1.0/client",
     "react/": "https://esm.sh/react@^19.1.0/",
     "react-router-dom": "https://esm.sh/react-router-dom@6",
-    "react-icons/fa": "https://esm.sh/react-icons@5.2.1/fa",
+    "react-router": "https://esm.sh/react-router@6",
     "react-icons/fa6": "https://esm.sh/react-icons@5.2.1/fa6",
     "react-icons/": "https://esm.sh/react-icons@^5.5.0/",
     "react-dom/": "https://esm.sh/react-dom@^19.1.0/"
   }
 }
 </script>
-    <!-- JW Player Library -->
     <script type="text/javascript" src="https://cdn.jwplayer.com/libraries/IDzF9Zmk.js"></script>
-    <!-- Disqus Count Script (optional, but was in the provided script) -->
-    <script id="dsq-count-scr" src="//https-incriveiscuriosidades-online.disqus.com/count.js" async></script>
-    <!-- JW Player License Key -->
+    <script id="dsq-count-scr" async></script>
     <script type="text/javascript">
-      // Ensure jwplayer is defined before setting key, though library should load first
-      // This is a common practice.
-      if (typeof jwplayer !== 'undefined') {
-        jwplayer.key="64HPbvSQorQcd52B8XFuhMtEoitbvY/EXJmMBfKcXZQU2Rnn";
-      } else {
-        // Handle cases where library might not load immediately (less likely with simple script tags)
-        // Or set it on an event listener for script load if more robustness is needed.
+      // Initialize Disqus script src dynamically
+      const disqusScript = document.getElementById('dsq-count-scr');
+      if (disqusScript && window.env && window.env.REACT_APP_DISQUS_SHORTNAME) {
+        disqusScript.src = `//${window.env.REACT_APP_DISQUS_SHORTNAME}.disqus.com/count.js`;
+      }
+
+      // Initialize JW Player key dynamically
+      if (typeof jwplayer !== 'undefined' && window.env && window.env.REACT_APP_JWPLAYER_KEY) {
+        jwplayer.key = window.env.REACT_APP_JWPLAYER_KEY;
+      } else if (typeof jwplayer === 'undefined') {
         console.warn("JW Player library not loaded when key was attempted to be set.");
+      } else {
+        console.warn("JW Player key not found in window.env.REACT_APP_JWPLAYER_KEY.");
       }
     </script>
 <link rel="stylesheet" href="/index.css">
 </head>
-  <body class="bg-background text-text-primary">
+  <body class="text-text-primary">
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
   </body>

@@ -1,12 +1,14 @@
 
+
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { apiService } from '../services/apiService';
-import { EpisodeExibir, Anime, Comment as CommentType } from '../types';
+import { EpisodeExibir, Anime, Comment as CommentType, JuicyAdsSettings } from '../types';
 import { useAuth } from '../hooks/useAuth';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { EPISODE_THUMB_PLACEHOLDER, resolveImageUrl, DEFAULT_PLACEHOLDER_IMAGE } from '../constants';
 import CommentSection from '../components/comments/CommentSection'; // New component
+import JuicyAdsBanner from '../components/ads/JuicyAdsBanner'; // Import Banner
 import { FaDownload } from 'react-icons/fa';
 
 declare global {
@@ -30,10 +32,19 @@ const PlayerPage: React.FC = () => {
   const [playerError, setPlayerError] = useState<string | null>(null);
   const [dataFetchError, setDataFetchError] = useState<string | null>(null);
   const [isProcessingDownload, setIsProcessingDownload] = useState(false);
+  const [adSettings, setAdSettings] = useState<Partial<JuicyAdsSettings>>({});
 
 
   const playerContainerRef = useRef<HTMLDivElement>(null);
   const jwPlayerInstanceRef = useRef<any>(null);
+
+  useEffect(() => {
+    // Load ad settings from localStorage
+    const storedSettings = localStorage.getItem('siteSettings');
+    if (storedSettings) {
+      setAdSettings(JSON.parse(storedSettings));
+    }
+  }, []);
 
   const cleanupPlayer = useCallback(() => {
     if (jwPlayerInstanceRef.current) {
@@ -135,7 +146,6 @@ const PlayerPage: React.FC = () => {
     setIsProcessingDownload(true);
     try {
       const downloadData = {
-        // user_id: user.id, // Removed: Backend derives user_id from token
         anime_id: parseInt(animeId, 10),
         episode_id: currentPlayingEpisode.id,
         title: animeDetailsForInfoBox.titulo,
@@ -182,6 +192,17 @@ const PlayerPage: React.FC = () => {
               </div>
             )}
           </div>
+
+          {/* Ad Placeholder 300x250 under video */}
+          {adSettings.juicyAdsEnabled && adSettings.juicyAdsSpotBanner300x250 && (
+            <div className="my-4 flex justify-center">
+              <JuicyAdsBanner 
+                spotId={adSettings.juicyAdsSpotBanner300x250} 
+                width={300} 
+                height={250} 
+              />
+            </div>
+          )}
           
            <div className="flex flex-col sm:flex-row justify-between items-center border-t border-gray-700 pt-4">
             <div className="w-full sm:w-auto mb-2 sm:mb-0">
@@ -193,7 +214,7 @@ const PlayerPage: React.FC = () => {
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 md:h-5 md:w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
                         <span>Anterior (Ep. {prevExibirEpisode.episodio})</span>
                     </Link>
-                    ) : <div className="sm:w-1/3"></div>} {/* Placeholder to balance layout */}
+                    ) : <div className="sm:w-1/3"></div>} 
             </div>
             
             <div className="flex flex-col sm:flex-row items-center gap-2 mb-2 sm:mb-0">
@@ -223,7 +244,7 @@ const PlayerPage: React.FC = () => {
                     <span>Próximo (Ep. {nextExibirEpisode.episodio})</span>
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 md:h-5 md:w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" /></svg>
                 </Link>
-                ) : <div className="sm:w-1/3"></div>} {/* Placeholder to balance layout */}
+                ) : <div className="sm:w-1/3"></div>} 
             </div>
           </div>
         </section>

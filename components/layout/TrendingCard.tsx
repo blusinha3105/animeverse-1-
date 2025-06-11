@@ -1,4 +1,7 @@
 
+// This component is deprecated. Its functionality has been replaced by
+// TrendingCarousel.tsx and TrendingCarouselSlide.tsx
+// This file can be removed from the project in the future.
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Anime } from '../../types';

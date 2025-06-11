@@ -1,8 +1,23 @@
 
-export const API_BASE_URL = 'http://node1.forgerhost.online:20034'; // Replace with your backend URL
+import { ThemeSettings } from './types';
+
+// Read API_BASE_URL from window.env injected by index.html or deployment process
+// Fallback to localhost for local development if not set.
+export const API_BASE_URL = (window as any).env?.REACT_APP_API_BASE_URL || 'https://back-api.orbital.host';
+
 export const APP_NAME = 'AnimeVerse';
 export const DEFAULT_PLACEHOLDER_IMAGE = 'https://picsum.photos/300/450?grayscale';
 export const EPISODE_THUMB_PLACEHOLDER = 'https://picsum.photos/320/180?grayscale';
+
+export const DEFAULT_THEME: ThemeSettings = {
+  primary: '#581c87',        // Dark Purple (purple-900)
+  primaryAction: '#dc2626',  // Red (red-600)
+  secondary: '#7e22ce',      // Lighter Dark Purple (purple-700)
+  background: '#000000',     // Absolute Black
+  card: '#0A0A0A',           // Very Dark Gray (almost black)
+  textPrimary: '#E0E0E0',    // Light Gray
+  textSecondary: '#A0A0A0',   // Medium Gray
+};
 
 export const resolveImageUrl = (path?: string): string => {
   if (!path) {

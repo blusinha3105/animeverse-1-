@@ -30,9 +30,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setLoading(true);
       const storedToken = authService.getToken();
       if (storedToken) {
-        const currentUser = authService.getUserFromToken(); // This now correctly includes admin status
+        const currentUser = authService.getUserFromToken(); 
         if (currentUser) {
-          setUser(currentUser);
+          setUser(currentUser); // This now includes is_banned
           setToken(storedToken);
         } else {
           authService.logout(); // Invalid token
@@ -45,8 +45,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (userLogin: string, senhaLogin: string) => {
     setLoading(true);
-    const { token: newToken, user: loggedInUser } = await authService.login(userLogin, senhaLogin); // loggedInUser includes admin status
-    setUser(loggedInUser);
+    const { token: newToken, user: loggedInUser } = await authService.login(userLogin, senhaLogin); 
+    setUser(loggedInUser); // This now includes is_banned
     setToken(newToken);
     setLoading(false);
   };

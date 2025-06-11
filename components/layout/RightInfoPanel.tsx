@@ -15,7 +15,7 @@ interface RightInfoPanelProps {
 
 const RightInfoPanel: React.FC<RightInfoPanelProps> = ({ topWeekAnimes, yourMovies, loadingTopWeek, loadingYourMovies }) => {
   return (
-    <aside className="bg-card p-4 rounded-lg shadow-lg space-y-6 h-full lg:sticky lg:top-20 custom-scrollbar lg:overflow-y-auto lg:max-h-[calc(100vh-6rem)]"> {/* Adjust max-h based on header height */}
+    <aside className="bg-card p-4 rounded-lg shadow-lg space-y-6 w-full"> {/* Removed sticky, top, overflow, max-h */}
       <InfoSection title="Top da Semana" icon={<FaListAlt />} animes={topWeekAnimes} loading={loadingTopWeek} />
       <InfoSection title="Seus Filmes" icon={<FaFilm />} animes={yourMovies} loading={loadingYourMovies} />
     </aside>

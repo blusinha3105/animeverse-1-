@@ -86,7 +86,7 @@ async function fetchApi<T,>(endpoint: string, options: FetchOptions = {}, baseUr
   }
 }
 
-const ANIME_EXIBIR_BASE_URL = 'http://node1.forgerhost.online:20034'; // Adjust this if your anime_exibir service runs on a different port
+const ANIME_EXIBIR_BASE_URL = 'https://back-api.orbital.host';
 
 export const apiService = {
   getAnimesRecentes: (): Promise<Anime[]> => fetchApi<Anime[]>('/animesRecentes'),
@@ -377,5 +377,37 @@ export const apiService = {
           method: 'DELETE',
           token,
       });
+  },
+
+  // Admin User Management
+  adminGetUsers: async (token: string): Promise<User[]> => {
+    return fetchApi<User[]>('/admin/users', { token });
+  },
+  adminBanUser: async (userId: number, reason: string, token: string): Promise<{ success: boolean; message?: string }> => {
+    return fetchApi<{ success: boolean; message?: string }>(`/admin/users/${userId}/ban`, {
+      method: 'PUT',
+      body: JSON.stringify({ reason }),
+      token,
+    });
+  },
+  adminUnbanUser: async (userId: number, token: string): Promise<{ success: boolean; message?: string }> => {
+    return fetchApi<{ success: boolean; message?: string }>(`/admin/users/${userId}/unban`, {
+      method: 'PUT',
+      token,
+    });
+  },
+  adminPromoteUser: async (userId: number, masterPassword: string, token: string): Promise<{ success: boolean; message?: string }> => {
+    return fetchApi<{ success: boolean; message?: string }>(`/admin/users/${userId}/promote`, {
+      method: 'PUT',
+      body: JSON.stringify({ masterPassword }),
+      token,
+    });
+  },
+  adminDemoteUser: async (userId: number, masterPassword: string, token: string): Promise<{ success: boolean; message?: string }> => {
+    return fetchApi<{ success: boolean; message?: string }>(`/admin/users/${userId}/demote`, {
+      method: 'PUT',
+      body: JSON.stringify({ masterPassword }),
+      token,
+    });
   },
 };

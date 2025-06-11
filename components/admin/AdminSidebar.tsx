@@ -1,11 +1,12 @@
 
+
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { 
     FaDisplay, FaCirclePlus, FaPenToSquare, FaTv, 
     FaScrewdriverWrench, FaGears, FaRobot, FaBullhorn,
     FaComments, FaLifeRing, FaNewspaper, FaUsersGear,
-    FaTableColumns, FaAnglesLeft, FaAnglesRight // Updated Icons
+    FaTableColumns, FaAnglesLeft, FaAnglesRight, FaUsers // Changed FaUsersCog to FaUsers
 } from 'react-icons/fa6'; 
 import { useAuth } from '../../hooks/useAuth'; 
 import { resolveImageUrl, DEFAULT_PLACEHOLDER_IMAGE, APP_NAME } from '../../constants';
@@ -42,54 +43,54 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isOpen, toggleSidebar, isMo
             {isOpen ? <FaAnglesLeft size={20} /> : <FaAnglesRight size={20} />}
         </button>
       </div>
-        <nav className="mt-6 px-3 space-y-1.5"> {/* Adjusted space-y */}
-              {/* Links updated to show icon only when collapsed, text on hover/open */}
-              <NavLink to="/admin/dashboard" className={navLinkClasses} title="Início">
-                <FaDisplay className={iconClasses} /> <span className={`${!isOpen && 'hidden group-hover:inline'} ${textClasses}`}>Início</span>
-              </NavLink>
-              <NavLink to="/admin/users" className={navLinkClasses} title="Gerenciar Usuários">
-                <FaUsersGear className={iconClasses} /> <span className={`${!isOpen && 'hidden group-hover:inline'} ${textClasses}`}>Usuários</span>
-              </NavLink>
-              <NavLink to="/admin/insert-catalog" className={navLinkClasses} title="Inserir Catálogo">
-                <FaCirclePlus className={iconClasses} /> <span className={`${!isOpen && 'hidden group-hover:inline'} ${textClasses}`}>Inserir Catálogo</span>
-              </NavLink>
-              <NavLink to="/admin/edit-catalog" className={navLinkClasses} title="Editar Catálogo">
-                <FaPenToSquare className={iconClasses} /> <span className={`${!isOpen && 'hidden group-hover:inline'} ${textClasses}`}>Editar Catálogo</span>
-              </NavLink>
-               <NavLink to="/admin/home-sections" className={navLinkClasses} title="Gerenciar Homepage">
-                <FaTableColumns className={iconClasses} /> <span className={`${!isOpen && 'hidden group-hover:inline'} ${textClasses}`}>Gerenciar Homepage</span>
-              </NavLink>
-              <NavLink to="/admin/add-exibir" className={navLinkClasses} title="Adicionar Exibir">
-                <FaTv className={iconClasses} /> <span className={`${!isOpen && 'hidden group-hover:inline'} ${textClasses}`}>Adicionar Exibir</span>
-              </NavLink>
-              <NavLink to="/admin/edit-exibir" className={navLinkClasses} title="Editar Exibir">
-                <FaPenToSquare className={iconClasses} /> <span className={`${!isOpen && 'hidden group-hover:inline'} ${textClasses}`}>Editar Exibir</span>
-              </NavLink>
-               <NavLink to="/admin/news" className={navLinkClasses} title="Notícias (Blog)"> 
-                <FaNewspaper className={iconClasses} /> <span className={`${!isOpen && 'hidden group-hover:inline'} ${textClasses}`}>Notícias (Blog)</span>
-              </NavLink>
-              <NavLink to="/admin/comments" className={navLinkClasses} title="Gerenciar Comentários">
-                  <FaComments className={iconClasses} /> <span className={`${!isOpen && 'hidden group-hover:inline'} ${textClasses}`}>Gerenciar Comentários</span>
-              </NavLink>
-               <NavLink to="/admin/community" className={navLinkClasses} title="Gerenciar Comunidade">
-                  <FaUsersGear className={iconClasses} /> <span className={`${!isOpen && 'hidden group-hover:inline'} ${textClasses}`}>Gerenciar Comunidade</span>
-              </NavLink>
-              <NavLink to="/admin/support-tickets" className={navLinkClasses} title="Tickets de Suporte">
-                  <FaLifeRing className={iconClasses} /> <span className={`${!isOpen && 'hidden group-hover:inline'} ${textClasses}`}>Tickets de Suporte</span>
-              </NavLink>
-              <NavLink to="/admin/broadcast-message" className={navLinkClasses} title="Mensagem Global">
-                <FaBullhorn className={iconClasses} /> <span className={`${!isOpen && 'hidden group-hover:inline'} ${textClasses}`}>Mensagem Global</span>
-              </NavLink>
-              <NavLink to="/admin/scraper" className={navLinkClasses} title="Scraper de Animes">
-                <FaRobot className={iconClasses} /> <span className={`${!isOpen && 'hidden group-hover:inline'} ${textClasses}`}>Scraper de Animes</span>
-              </NavLink>
-              <NavLink to="/admin/utilities" className={navLinkClasses} title="Utilitários">
-                <FaScrewdriverWrench className={iconClasses} /> <span className={`${!isOpen && 'hidden group-hover:inline'} ${textClasses}`}>Utilitários</span>
-              </NavLink>
-              <NavLink to="/admin/settings" className={navLinkClasses} title="Configurações">
-                <FaGears className={iconClasses} /> <span className={`${!isOpen && 'hidden group-hover:inline'} ${textClasses}`}>Configurações</span>
-              </NavLink>
-            </nav>
+      <nav className="mt-6 px-3 space-y-1.5"> {/* Adjusted space-y */}
+        {/* Links updated to show icon only when collapsed, text on hover/open */}
+        <NavLink to="/admin/dashboard" className={navLinkClasses} title="Início">
+          <FaDisplay className={iconClasses} /> <span className={`${!isOpen && 'hidden group-hover:inline'} ${textClasses}`}>Início</span>
+        </NavLink>
+        <NavLink to="/admin/users" className={navLinkClasses} title="Gerenciar Usuários">
+          <FaUsers className={iconClasses} /> <span className={`${!isOpen && 'hidden group-hover:inline'} ${textClasses}`}>Gerenciar Usuários</span>
+        </NavLink>
+        <NavLink to="/admin/insert-catalog" className={navLinkClasses} title="Inserir Catálogo">
+          <FaCirclePlus className={iconClasses} /> <span className={`${!isOpen && 'hidden group-hover:inline'} ${textClasses}`}>Inserir Catálogo</span>
+        </NavLink>
+        <NavLink to="/admin/edit-catalog" className={navLinkClasses} title="Editar Catálogo">
+          <FaPenToSquare className={iconClasses} /> <span className={`${!isOpen && 'hidden group-hover:inline'} ${textClasses}`}>Editar Catálogo</span>
+        </NavLink>
+         <NavLink to="/admin/home-sections" className={navLinkClasses} title="Gerenciar Homepage">
+          <FaTableColumns className={iconClasses} /> <span className={`${!isOpen && 'hidden group-hover:inline'} ${textClasses}`}>Gerenciar Homepage</span>
+        </NavLink>
+        <NavLink to="/admin/add-exibir" className={navLinkClasses} title="Adicionar Exibir">
+          <FaTv className={iconClasses} /> <span className={`${!isOpen && 'hidden group-hover:inline'} ${textClasses}`}>Adicionar Exibir</span>
+        </NavLink>
+        <NavLink to="/admin/edit-exibir" className={navLinkClasses} title="Editar Exibir">
+          <FaPenToSquare className={iconClasses} /> <span className={`${!isOpen && 'hidden group-hover:inline'} ${textClasses}`}>Editar Exibir</span>
+        </NavLink>
+         <NavLink to="/admin/news" className={navLinkClasses} title="Notícias (Blog)"> 
+          <FaNewspaper className={iconClasses} /> <span className={`${!isOpen && 'hidden group-hover:inline'} ${textClasses}`}>Notícias (Blog)</span>
+        </NavLink>
+        <NavLink to="/admin/comments" className={navLinkClasses} title="Gerenciar Comentários">
+            <FaComments className={iconClasses} /> <span className={`${!isOpen && 'hidden group-hover:inline'} ${textClasses}`}>Gerenciar Comentários</span>
+        </NavLink>
+         <NavLink to="/admin/community" className={navLinkClasses} title="Gerenciar Comunidade">
+            <FaUsersGear className={iconClasses} /> <span className={`${!isOpen && 'hidden group-hover:inline'} ${textClasses}`}>Gerenciar Comunidade</span>
+        </NavLink>
+        <NavLink to="/admin/support-tickets" className={navLinkClasses} title="Tickets de Suporte">
+            <FaLifeRing className={iconClasses} /> <span className={`${!isOpen && 'hidden group-hover:inline'} ${textClasses}`}>Tickets de Suporte</span>
+        </NavLink>
+        <NavLink to="/admin/broadcast-message" className={navLinkClasses} title="Mensagem Global">
+          <FaBullhorn className={iconClasses} /> <span className={`${!isOpen && 'hidden group-hover:inline'} ${textClasses}`}>Mensagem Global</span>
+        </NavLink>
+        <NavLink to="/admin/scraper" className={navLinkClasses} title="Scraper de Animes">
+          <FaRobot className={iconClasses} /> <span className={`${!isOpen && 'hidden group-hover:inline'} ${textClasses}`}>Scraper de Animes</span>
+        </NavLink>
+        <NavLink to="/admin/utilities" className={navLinkClasses} title="Utilitários">
+          <FaScrewdriverWrench className={iconClasses} /> <span className={`${!isOpen && 'hidden group-hover:inline'} ${textClasses}`}>Utilitários</span>
+        </NavLink>
+        <NavLink to="/admin/settings" className={navLinkClasses} title="Configurações">
+          <FaGears className={iconClasses} /> <span className={`${!isOpen && 'hidden group-hover:inline'} ${textClasses}`}>Configurações</span>
+        </NavLink>
+      </nav>
       <div className={`absolute bottom-4 left-0 right-0 px-3 ${!isOpen && 'group-hover:px-3 hidden group-hover:block'}`}>
          <div className={`flex items-center p-3 bg-gray-700 rounded-lg ${!isOpen && 'justify-center'}`}>
             <img 

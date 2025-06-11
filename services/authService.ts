@@ -19,6 +19,16 @@ const jwtDecode = <T,>(token: string): T | null => {
 
 const TOKEN_KEY = 'animeverse_token';
 
+interface DecodedJwtPayload {
+  id: number;
+  nome: string;
+  email: string;
+  vip: boolean;
+  admin: boolean;
+  imagem_perfil?: string;
+  is_banned?: boolean; // Added
+}
+
 export const authService = {
   login: async (userLogin: string, senhaLogin: string): Promise<{ token: string; user: User }> => {
     const response = await fetch(`${API_BASE_URL}/login`, {
@@ -30,11 +40,15 @@ export const authService = {
     const data: AuthResponse = await response.json();
 
     if (!response.ok || !data.token) {
-      throw new Error(data.message || 'Login failed');
+      let errorMessage = data.message || 'Login failed';
+      if (response.status === 403 && data.reason) { // Specifically handle banned user response
+        errorMessage = `${data.message} Motivo: ${data.reason}`;
+      }
+      throw new Error(errorMessage);
     }
     
     localStorage.setItem(TOKEN_KEY, data.token);
-    const decodedUser = jwtDecode<{ id: number; nome: string; email: string; vip: boolean; admin: boolean; imagem_perfil?: string }>(data.token);
+    const decodedUser = jwtDecode<DecodedJwtPayload>(data.token);
     if (!decodedUser) {
         throw new Error('Failed to decode token');
     }
@@ -45,7 +59,8 @@ export const authService = {
         email: decodedUser.email,
         vip: !!decodedUser.vip, // Ensure boolean
         admin: !!decodedUser.admin, // Ensure boolean
-        imagem_perfil: decodedUser.imagem_perfil
+        imagem_perfil: decodedUser.imagem_perfil,
+        is_banned: !!decodedUser.is_banned, // Ensure boolean
     };
     return { token: data.token, user: userObject };
   },
@@ -74,7 +89,7 @@ export const authService = {
   getUserFromToken: (): User | null => {
     const token = localStorage.getItem(TOKEN_KEY);
     if (!token) return null;
-    const decodedUser = jwtDecode<{ id: number; nome: string; email: string; vip: boolean; admin: boolean; imagem_perfil?: string }>(token);
+    const decodedUser = jwtDecode<DecodedJwtPayload>(token);
     if (!decodedUser) return null;
     // Ensure the user object structure matches the User type
     return {
@@ -83,8 +98,8 @@ export const authService = {
         email: decodedUser.email,
         vip: !!decodedUser.vip,
         admin: !!decodedUser.admin,
-        imagem_perfil: decodedUser.imagem_perfil
+        imagem_perfil: decodedUser.imagem_perfil,
+        is_banned: !!decodedUser.is_banned,
     };
   },
 };
-      

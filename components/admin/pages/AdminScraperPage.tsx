@@ -27,8 +27,7 @@ const AdminScraperPage: React.FC = () => {
 
     try {
       const result = await apiService.adminScrapeAnime(provider, homeLink, token);
-      const links = result.LinksEncontrados.filter((link: string | null) => link !== null);
-      setScraperResult(links); // Pretty print JSON
+      setScraperResult(JSON.stringify(result, null, 2)); // Pretty print JSON
       setStatusMessage('Scraper concluído com sucesso!');
     } catch (error) {
       const errorMessage = (error as Error).message || "Erro desconhecido no scraper.";

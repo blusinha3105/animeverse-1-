@@ -1,6 +1,6 @@
 
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import AuthForm from '../components/AuthForm';
 import { APP_NAME } from '../constants';
@@ -8,15 +8,34 @@ import { APP_NAME } from '../constants';
 const LoginPage: React.FC = () => {
   const { login, loading: authLoading } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [banMessage, setBanMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    const locationState = location.state as { banned?: boolean; reason?: string; from?: Location };
+    if (locationState?.banned) {
+      setBanMessage(`Sua conta está banida. Motivo: ${locationState.reason || 'Não especificado.'}`);
+      // Clear the state to prevent message from showing again on refresh or re-navigation
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location, navigate]);
+
 
   const handleLogin = async (formData: Record<string, string>) => {
     setErrorMessage(null);
+    setBanMessage(null); // Clear ban message on new login attempt
     try {
       await login(formData.user, formData.senha);
-      navigate('/profile'); // Or to previous page
+      const from = (location.state as { from?: Location })?.from?.pathname || '/profile';
+      navigate(from, { replace: true });
     } catch (error) {
-      setErrorMessage((error as Error).message || 'Login falhou. Verifique suas credenciais.');
+      const errorMsg = (error as Error).message || 'Login falhou. Verifique suas credenciais.';
+       if (errorMsg.toLowerCase().includes('banida') || errorMsg.toLowerCase().includes('banned')) {
+        setBanMessage(errorMsg); // Show ban message from login attempt itself
+      } else {
+        setErrorMessage(errorMsg);
+      }
       console.error('Login error:', error);
     }
   };
@@ -29,6 +48,11 @@ const LoginPage: React.FC = () => {
             Entrar em {APP_NAME}
           </h2>
         </div>
+        {banMessage && (
+          <p className="text-sm text-yellow-400 text-center bg-yellow-900 bg-opacity-40 p-3 rounded-md border border-yellow-700">
+            {banMessage}
+          </p>
+        )}
         <AuthForm
           formType="login"
           onSubmit={handleLogin}

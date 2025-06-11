@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 import SearchBar from './SearchBar'; 
@@ -12,11 +11,15 @@ import { resolveImageUrl, DEFAULT_PLACEHOLDER_IMAGE, APP_NAME } from '../constan
 import { apiService } from '../services/apiService';
 import type { UserNotification } from '../types';
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  toggleMainMobileSidebar: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ toggleMainMobileSidebar }) => {
   const { user, token } = useAuth();
   const navigate = useNavigate();
 
-  const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false); // This is for the right-side mobile menu
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState<UserNotification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -30,7 +33,6 @@ const Header: React.FC = () => {
         setUnreadCount(fetchedNotifications.filter(n => !n.is_read).length);
       } catch (error) {
         console.error("Erro ao buscar notificações:", error);
-        // Optionally set an error state to show in UI
       }
     } else {
       setNotifications([]);
@@ -47,7 +49,7 @@ const Header: React.FC = () => {
     try {
       await apiService.markNotificationAsRead(notificationId, token);
       setNotifications(prev => prev.map(n => n.id === notificationId ? { ...n, is_read: true } : n));
-      setUnreadCount(prev => Math.max(0, prev - 1)); // Decrement, ensuring not below 0
+      setUnreadCount(prev => Math.max(0, prev - 1));
     } catch (error) {
       console.error("Erro ao marcar notificação como lida:", error);
     }
@@ -89,9 +91,17 @@ const Header: React.FC = () => {
      ${isActive ? 'bg-primary text-white' : 'text-text-secondary hover:bg-gray-700 hover:text-text-primary'}`;
 
   return (
-    <header className="h-16 bg-background flex items-center justify-between px-4 md:px-6 flex-shrink-0 sticky top-0 z-40 shadow-md">
+    <header className="h-16 bg-background flex items-center justify-between px-4 md:px-6 flex-shrink-0 sticky top-0 z-30 shadow-md">
       <div className="flex items-center">
-        <Link to="/" className="text-2xl font-bold text-primary hover:text-secondary transition-colors mr-4">
+        {/* Hamburger for main LeftSidebar on mobile */}
+        <button 
+          onClick={toggleMainMobileSidebar} 
+          className="md:hidden text-text-secondary hover:text-text-primary mr-3 p-1"
+          aria-label="Abrir menu principal"
+        >
+          <FaBars size={22} />
+        </button>
+        <Link to="/" className="text-2xl font-bold text-primary hover:text-secondary transition-colors">
           {APP_NAME}
         </Link>
       </div>
@@ -106,9 +116,10 @@ const Header: React.FC = () => {
         <div className="hidden sm:block">
           <SearchBar onSearch={() => setShowMobileMenu(false)} />
         </div>
+        {/* Search toggle for small screens (part of right-side mobile menu) */}
         <div className="sm:hidden">
             <button onClick={() => setShowMobileMenu(prev => !prev)} className="text-text-secondary hover:text-text-primary">
-                <FaMagnifyingGlass size={20} />
+                {showMobileMenu ? <FaXmark size={20} /> : <FaMagnifyingGlass size={20} />}
             </button>
         </div>
 
@@ -201,15 +212,17 @@ const Header: React.FC = () => {
           </Link>
         )}
         
+        {/* Hamburger for right-side mobile menu (search, quick links) */}
         <div className="md:hidden">
-          <button onClick={() => setShowMobileMenu(prev => !prev)} className="text-text-secondary hover:text-text-primary" aria-label="Abrir menu de navegação" aria-expanded={showMobileMenu}>
+          <button onClick={() => setShowMobileMenu(prev => !prev)} className="text-text-secondary hover:text-text-primary" aria-label="Abrir menu de navegação secundário" aria-expanded={showMobileMenu}>
             {showMobileMenu ? <FaXmark size={22} /> : <FaBars size={22} />}
           </button>
         </div>
       </div>
 
+      {/* This is the RIGHT-SIDE mobile dropdown menu for search and quick links */}
       {showMobileMenu && (
-        <div className="md:hidden absolute top-16 left-0 right-0 bg-background shadow-lg z-30 p-4">
+        <div className="md:hidden absolute top-16 left-0 right-0 bg-background shadow-lg z-20 p-4">
           <div className="mb-4"> <SearchBar onSearch={() => setShowMobileMenu(false)}/> </div>
           <nav className="flex flex-col space-y-2">
             <NavLink to="/series" className={mobileNavLinkClasses} onClick={() => setShowMobileMenu(false)}>Séries</NavLink>

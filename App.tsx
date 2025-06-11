@@ -1,5 +1,4 @@
 
-
 import React from 'react';
 import { HashRouter, Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
 import UserLayout from './components/layout/UserLayout'; 
@@ -51,7 +50,7 @@ import AdminCommentsPage from './components/admin/pages/AdminCommentsPage';
 import AdminNewsPage from './components/admin/pages/AdminNewsPage'; 
 import AdminCommunityPage from './components/admin/pages/AdminCommunityPage';
 import AdminHomePageSectionsPage from './components/admin/pages/AdminHomePageSectionsPage';
-import AdminUsersPage from './src/components/admin/pages/AdminUsersPage';
+import AdminUsersPage from './components/admin/pages/AdminUsersPage'; // New User Management Page
 
 
 const App: React.FC = () => {
@@ -124,6 +123,11 @@ const UserPrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
   const location = useLocation();
 
   if (loading) return <LoadingSpinner />;
+  
+  if (user && user.is_banned) {
+    return <Navigate to="/login" replace state={{ from: location, banned: true, reason: user.banned_reason }} />;
+  }
+  
   return user ? children : <Navigate to="/login" replace state={{ from: location }} />;
 };
 
@@ -132,6 +136,11 @@ const AdminPrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
   const location = useLocation();
 
   if (loading) return <LoadingSpinner />;
+  
+  if (user && user.is_banned) { // Also prevent banned admins from accessing admin panel
+    return <Navigate to="/login" replace state={{ from: location, banned: true, reason: user.banned_reason }} />;
+  }
+
   return user && user.admin ? children : <Navigate to="/login" replace state={{ from: location }} />;
 };
 
@@ -141,8 +150,8 @@ const AdminRoutes: React.FC = () => (
     <AdminLayout>
       <Routes>
         <Route path="dashboard" element={<AdminDashboardPage />} />
+        <Route path="users" element={<AdminUsersPage />} /> {/* New Route */}
         <Route path="insert-catalog" element={<AdminInsertCatalogPage />} />
-        <Route path="users" element={<AdminUsersPage />} />
         <Route path="edit-catalog" element={<AdminEditCatalogPage />} />
         <Route path="add-exibir" element={<AdminAddExibirPage />} />
         <Route path="edit-exibir" element={<AdminEditExibirPage />} />

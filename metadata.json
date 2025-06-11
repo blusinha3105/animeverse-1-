@@ -1,6 +1,6 @@
-
 {
   "name": "AnimeVerse",
-  "description": "A modern React and Tailwind CSS application for browsing and watching anime, interacting with a custom backend."
+  "description": "A modern React and Tailwind CSS application for browsing and watching anime, interacting with a custom backend.",
+  "requestFramePermissions": [],
+  "prompt": ""
 }
-    

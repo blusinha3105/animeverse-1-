@@ -1,5 +1,10 @@
 
-export const API_BASE_URL = 'http://node1.forgerhost.online:20034'; // Replace with your backend URL
+import { ThemeSettings } from './types';
+
+// Read API_BASE_URL from window.env injected by index.html or deployment process
+// Fallback to localhost for local development if not set.
+export const API_BASE_URL = (window as any).env?.REACT_APP_API_BASE_URL || 'https://back-api.orbital.host';
+
 export const APP_NAME = 'AnimeVerse';
 export const DEFAULT_PLACEHOLDER_IMAGE = 'https://picsum.photos/300/450?grayscale';
 export const EPISODE_THUMB_PLACEHOLDER = 'https://picsum.photos/320/180?grayscale';

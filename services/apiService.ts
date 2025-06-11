@@ -86,11 +86,7 @@ async function fetchApi<T,>(endpoint: string, options: FetchOptions = {}, baseUr
   }
 }
 
-<<<<<<< HEAD
 const ANIME_EXIBIR_BASE_URL = 'https://back-api.orbital.host';
-=======
-const ANIME_EXIBIR_BASE_URL = 'https://back-api.orbital.host'; // Adjust this if your anime_exibir service runs on a different port
->>>>>>> 5bcc3110f12bcc65209cf79560abb0807d2d8ba8
 
 export const apiService = {
   getAnimesRecentes: (): Promise<Anime[]> => fetchApi<Anime[]>('/animesRecentes'),
